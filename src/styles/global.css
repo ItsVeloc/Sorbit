@@ -1,0 +1,160 @@
+/* styles/global.css */
+:root {
+  --primary-color: #3498db;
+  --primary-dark: #2980b9;
+  --secondary-color: #2ecc71;
+  --secondary-dark: #27ae60;
+  --accent-color: #e74c3c;
+  --light-bg: #f5f7fa;
+  --dark-text: #2c3e50;
+  --medium-text: #7f8c8d;
+  --light-text: #ecf0f1;
+  --border-color: #dfe6e9;
+  --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  line-height: 1.6;
+  color: var(--dark-text);
+  background-color: var(--light-bg);
+}
+
+a {
+  color: var(--primary-color);
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+button {
+  cursor: pointer;
+}
+
+.app {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+.app-header {
+  background-color: var(--primary-color);
+  color: white;
+  padding: 1rem;
+  box-shadow: var(--shadow);
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+}
+
+.app-title {
+  font-size: 1.5rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 1rem;
+}
+
+.nav-link {
+  color: var(--light-text);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  transition: background-color 0.2s;
+}
+
+.nav-link:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+  text-decoration: none;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem;
+  width: 100%;
+  flex: 1;
+}
+
+.app-footer {
+  background-color: var(--dark-text);
+  color: var(--light-text);
+  text-align: center;
+  padding: 1rem;
+  margin-top: auto;
+}
+
+/* Home page */
+.home-page {
+  text-align: center;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.home-page h1 {
+  margin-bottom: 1rem;
+  color: var(--primary-color);
+}
+
+.role-selection {
+  display: flex;
+  justify-content: center;
+  gap: 2rem;
+  margin: 3rem 0;
+}
+
+.role-button {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem;
+  width: 200px;
+  height: 200px;
+  border-radius: 50%;
+  font-size: 1.25rem;
+  font-weight: bold;
+  transition: transform 0.2s, box-shadow 0.2s;
+  color: white;
+}
+
+.role-button:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+  text-decoration: none;
+}
+
+.role-button.teacher {
+  background-color: var(--primary-color);
+}
+
+.role-button.student {
+  background-color: var(--secondary-color);
+}
+
+.app-description {
+  margin-top: 3rem;
+  padding: 2rem;
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+}
+
+.app-description h2 {
+  color: var(--primary-color);
+  margin-bottom: 1rem;
+}

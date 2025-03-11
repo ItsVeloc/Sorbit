@@ -1,0 +1,221 @@
+/* styles/teacher.css */
+.teacher-tabs {
+  display: flex;
+  margin-bottom: 2rem;
+  border-bottom: 1px solid var(--border-color);
+}
+
+.tab-button {
+  padding: 0.75rem 1.5rem;
+  background: transparent;
+  border: none;
+  border-bottom: 3px solid transparent;
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--medium-text);
+  transition: color 0.2s, border-color 0.2s;
+}
+
+.tab-button:hover {
+  color: var(--primary-color);
+}
+
+.tab-button.active {
+  color: var(--primary-color);
+  border-bottom-color: var(--primary-color);
+}
+
+.assignment-form-container, 
+.assignment-list-container {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  padding: 2rem;
+}
+
+.assignment-form-container h2,
+.assignment-list-container h2 {
+  margin-bottom: 1.5rem;
+  color: var(--primary-color);
+}
+
+.success-message {
+  padding: 1rem;
+  background-color: var(--secondary-color);
+  color: white;
+  border-radius: 4px;
+  margin-bottom: 1.5rem;
+}
+
+.assignment-form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+}
+
+.form-group input,
+.form-group textarea {
+  padding: 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  font-size: 1rem;
+}
+
+.questions-section {
+  margin-top: 1rem;
+}
+
+.questions-section h3 {
+  margin-bottom: 0.5rem;
+}
+
+.hint {
+  font-size: 0.875rem;
+  color: var(--medium-text);
+  margin-bottom: 1rem;
+}
+
+.question-item {
+  border: 1px solid var(--border-color);
+  border-radius: 4px;
+  padding: 1rem;
+  margin-bottom: 1rem;
+  position: relative;
+}
+
+.remove-question {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.25rem 0.5rem;
+  font-size: 0.75rem;
+}
+
+.add-question {
+  background-color: transparent;
+  color: var(--primary-color);
+  border: 1px dashed var(--primary-color);
+  border-radius: 4px;
+  padding: 0.75rem;
+  margin-bottom: 1.5rem;
+  width: 100%;
+  text-align: center;
+  font-weight: 600;
+}
+
+.submit-button {
+  background-color: var(--primary-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.75rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  align-self: flex-end;
+  transition: background-color 0.2s;
+}
+
+.submit-button:hover {
+  background-color: var(--primary-dark);
+}
+
+.assignment-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 1.5rem;
+}
+
+.no-assignments {
+  text-align: center;
+  padding: 2rem;
+  color: var(--medium-text);
+  background-color: var(--light-bg);
+  border-radius: 4px;
+}
+
+.assignment-card {
+  background-color: white;
+  border-radius: 8px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--border-color);
+}
+
+.assignment-header {
+  padding: 1rem;
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.assignment-subject {
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.2);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.75rem;
+  margin-top: 0.5rem;
+}
+
+.assignment-description {
+  padding: 1rem;
+  flex: 1;
+}
+
+.assignment-meta {
+  padding: 1rem;
+  background-color: var(--light-bg);
+}
+
+.meta-item {
+  display: flex;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.meta-label {
+  font-weight: 600;
+}
+
+.meta-value.code {
+  font-family: monospace;
+  background-color: var(--dark-text);
+  color: var(--light-text);
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+}
+
+.assignment-actions {
+  padding: 1rem;
+  display: flex;
+  justify-content: flex-end;
+}
+
+.delete-button {
+  background-color: var(--accent-color);
+  color: white;
+  border: none;
+  border-radius: 4px;
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  transition: background-color 0.2s;
+}
+
+.delete-button:hover {
+  background-color: #c0392b;
+}
