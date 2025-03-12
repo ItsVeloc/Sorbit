@@ -1,69 +1,42 @@
-// components/student/ChatInterface.js
+// src/components/student/ChatInterface.js
 import React, { useState, useEffect, useRef } from 'react';
+import { generateAiResponse, generateSimulatedResponse } from '../../utils/aiService';
 
 const ChatInterface = ({ assignment }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isAiTyping, setIsAiTyping] = useState(false);
+  const [error, setError] = useState(null);
   const messagesEndRef = useRef(null);
-
-  // Simulated AI service for the MVP
-  const simulateAiResponse = (userMessage, assignment) => {
-    return new Promise((resolve) => {
-      setIsAiTyping(true);
-      
-      // For the demo, we'll use a simple rule-based response system
-      // In the real application, this would call an LLM API
-      setTimeout(() => {
-        let response;
-        
-        // Initial greeting if this is the first message
-        if (messages.length === 0) {
-          response = `Hi there! I'm your AI tutor for the "${assignment.title}" assignment. 
-                     Let's work through this together. What do you already know about this topic?`;
-        }
-        // Check if the user's message contains keywords from the assignment
-        else if (userMessage.toLowerCase().includes('help') || 
-                userMessage.toLowerCase().includes('stuck')) {
-          response = `I'm happy to help! Let's break down the assignment: "${assignment.description}"
-                     Would you like me to explain any specific part of this topic?`;
-        }
-        // If we have sample questions, use them after a few exchanges
-        else if (assignment.questions && assignment.questions.length > 0 && 
-                messages.length >= 4 && messages.length % 3 === 0) {
-          // Pick a random question from the assignment
-          const randomIndex = Math.floor(Math.random() * assignment.questions.length);
-          const question = assignment.questions[randomIndex];
-          response = `Let's test your understanding. ${question.question}`;
-        }
-        // Generic responses for other cases
-        else {
-          const genericResponses = [
-            `That's interesting. Let's explore this further. Can you elaborate on your thoughts about ${assignment.subject}?`,
-            `Good point. In the context of this assignment, how would you apply this concept?`,
-            `I see. Based on "${assignment.description}", what do you think is the most important aspect to focus on?`,
-            `Great progress! Let's try approaching this from another angle. What if we consider...`,
-            `You're on the right track. Let's dig deeper into this topic.`
-          ];
-          const randomIndex = Math.floor(Math.random() * genericResponses.length);
-          response = genericResponses[randomIndex];
-        }
-        
-        setIsAiTyping(false);
-        resolve(response);
-      }, 1000 + Math.random() * 2000); // Random delay to simulate thinking
-    });
-  };
+  const [useApi, setUseApi] = useState(true); // Toggle for demo purposes
 
   // Initialize chat with a greeting from the AI
   useEffect(() => {
     const initializeChat = async () => {
-      const aiGreeting = await simulateAiResponse('', assignment);
-      setMessages([{ sender: 'ai', text: aiGreeting }]);
+      setIsAiTyping(true);
+      try {
+        let aiGreeting;
+        
+        if (useApi) {
+          // Try to use the API first
+          aiGreeting = await generateAiResponse('', assignment, []);
+        } else {
+          // Fall back to simulation if API is disabled
+          aiGreeting = generateSimulatedResponse('', assignment);
+        }
+        
+        setMessages([{ sender: 'ai', text: aiGreeting }]);
+        setError(null);
+      } catch (error) {
+        console.error('Error initializing chat:', error);
+        setError('Failed to connect to AI tutor. Please try again.');
+      } finally {
+        setIsAiTyping(false);
+      }
     };
     
     initializeChat();
-  }, [assignment]);
+  }, [assignment, useApi]);
 
   // Scroll to bottom when messages change
   useEffect(() => {
@@ -77,24 +50,73 @@ const ChatInterface = ({ assignment }) => {
     
     // Add user message to chat
     const userMessage = input.trim();
-    setMessages([...messages, { sender: 'user', text: userMessage }]);
+    const updatedMessages = [...messages, { sender: 'user', text: userMessage }];
+    setMessages(updatedMessages);
     setInput('');
+    setError(null);
     
-    // Get AI response
-    const aiResponse = await simulateAiResponse(userMessage, assignment);
-    setMessages(prevMessages => [
-      ...prevMessages, 
-      { sender: 'ai', text: aiResponse }
-    ]);
+    // Show AI is typing
+    setIsAiTyping(true);
+    
+    try {
+      let aiResponse;
+      
+      if (useApi) {
+        // Use API with the full chat history for context
+        aiResponse = await generateAiResponse(
+          userMessage, 
+          assignment,
+          updatedMessages.slice(0, -1) // Exclude the message we just added
+        );
+      } else {
+        // Use simulation for demo or if API fails
+        aiResponse = generateSimulatedResponse(userMessage, assignment);
+        // Add a slight delay to simulate network latency
+        await new Promise(resolve => setTimeout(resolve, 1000));
+      }
+      
+      setMessages(prevMessages => [
+        ...prevMessages, 
+        { sender: 'ai', text: aiResponse }
+      ]);
+    } catch (error) {
+      console.error('Error getting AI response:', error);
+      setError('Failed to get response from AI tutor. Please try again.');
+    } finally {
+      setIsAiTyping(false);
+    }
+  };
+
+  // Toggle between API and simulation (for demo purposes)
+  const toggleApiMode = () => {
+    setUseApi(!useApi);
   };
 
   return (
     <div className="chat-interface">
       <div className="chat-header">
         <h3>AI Tutor Chat</h3>
+        <div className="api-toggle">
+          <label>
+            <input 
+              type="checkbox" 
+              checked={useApi} 
+              onChange={toggleApiMode}
+            />
+            Use API (uncheck for demo mode)
+          </label>
+        </div>
       </div>
       
       <div className="chat-messages">
+        {error && (
+          <div className="message system-message">
+            <div className="message-bubble error">
+              {error}
+            </div>
+          </div>
+        )}
+        
         {messages.map((message, index) => (
           <div 
             key={index} 

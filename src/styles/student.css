@@ -1,4 +1,75 @@
 /* styles/student.css */
+/* API toggle styles */
+.chat-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.api-toggle {
+  font-size: 0.8rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.api-toggle input {
+  margin-right: 0.5rem;
+}
+
+/* Error message styles */
+.system-message .message-bubble {
+  background-color: #ffebee;
+  color: #c62828;
+  border: 1px solid #ffcdd2;
+  border-radius: 1rem;
+  padding: 0.75rem 1rem;
+  max-width: 80%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+/* Enhanced loading animation */
+.typing {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.5rem 1rem;
+}
+
+.dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background-color: var(--medium-text);
+  animation: bounce 1.4s infinite ease-in-out both;
+}
+
+.dot:nth-child(1) {
+  animation-delay: -0.32s;
+}
+
+.dot:nth-child(2) {
+  animation-delay: -0.16s;
+}
+
+@keyframes bounce {
+  0%, 80%, 100% { 
+    transform: scale(0);
+  }
+  40% { 
+    transform: scale(1.0);
+  }
+}
+
+/* Message transition effects */
+.message {
+  animation: fadeIn 0.3s ease-in;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
 .code-entry {
   max-width: 500px;
   margin: 0 auto;
