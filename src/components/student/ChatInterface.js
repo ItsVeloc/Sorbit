@@ -1,47 +1,96 @@
 // src/components/student/ChatInterface.js
 import React, { useState, useEffect, useRef } from 'react';
 import { generateAiResponse, generateSimulatedResponse } from '../../utils/aiService';
+import { saveConversation } from '../../utils/conversationStorage';
 
 const ChatInterface = ({ assignment }) => {
   const [messages, setMessages] = useState([]);
   const [input, setInput] = useState('');
   const [isAiTyping, setIsAiTyping] = useState(false);
   const [error, setError] = useState(null);
+  const [studentName, setStudentName] = useState('');
+  const [nameSubmitted, setNameSubmitted] = useState(false);
+  const [conversationId, setConversationId] = useState('');
   const messagesEndRef = useRef(null);
   const [useApi, setUseApi] = useState(true); // Toggle for demo purposes
 
-  // Initialize chat with a greeting from the AI
+  // Initialize chat with a student name prompt
   useEffect(() => {
-    const initializeChat = async () => {
-      setIsAiTyping(true);
-      try {
-        let aiGreeting;
+    if (!studentName) {
+      setMessages([{ 
+        sender: 'ai', 
+        text: 'Welcome! Please enter your name to begin this assignment.', 
+        timestamp: new Date().toISOString() 
+      }]);
+    }
+  }, [studentName]);
+
+  // Initialize conversation when student name is submitted
+  useEffect(() => {
+    if (nameSubmitted && studentName) {
+      const initializeChat = async () => {
+        setIsAiTyping(true);
         
-        if (useApi) {
-          // Try to use the API first
-          aiGreeting = await generateAiResponse('', assignment, []);
-        } else {
-          // Fall back to simulation if API is disabled
-          aiGreeting = generateSimulatedResponse('', assignment);
+        // Create a new conversation ID
+        const newConversationId = Date.now().toString();
+        setConversationId(newConversationId);
+        
+        try {
+          let aiGreeting;
+          
+          if (useApi) {
+            // Try to use the API first
+            aiGreeting = await generateAiResponse('', assignment, []);
+          } else {
+            // Fall back to simulation if API is disabled
+            aiGreeting = generateSimulatedResponse('', assignment);
+          }
+          
+          const greetingMessage = { 
+            sender: 'ai', 
+            text: aiGreeting, 
+            timestamp: new Date().toISOString() 
+          };
+          
+          // Get current messages and append the greeting
+          const updatedMessages = [...messages, greetingMessage];
+          setMessages(updatedMessages);
+          
+          // Save initial conversation
+          saveConversation({
+            id: newConversationId,
+            assignmentId: assignment.id,
+            assignmentCode: assignment.code,
+            assignmentTitle: assignment.title,
+            studentName: studentName,
+            timestamp: new Date().toISOString(),
+            messages: updatedMessages
+          });
+          
+          setError(null);
+        } catch (error) {
+          console.error('Error initializing chat:', error);
+          setError('Failed to connect to AI tutor. Please try again.');
+        } finally {
+          setIsAiTyping(false);
         }
-        
-        setMessages([{ sender: 'ai', text: aiGreeting }]);
-        setError(null);
-      } catch (error) {
-        console.error('Error initializing chat:', error);
-        setError('Failed to connect to AI tutor. Please try again.');
-      } finally {
-        setIsAiTyping(false);
-      }
-    };
-    
-    initializeChat();
-  }, [assignment, useApi]);
+      };
+      
+      initializeChat();
+    }
+  }, [nameSubmitted, studentName, assignment, useApi]);
 
   // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
+
+  const handleNameSubmit = (e) => {
+    e.preventDefault();
+    if (studentName.trim()) {
+      setNameSubmitted(true);
+    }
+  };
 
   const handleSendMessage = async (e) => {
     e.preventDefault();
@@ -50,7 +99,12 @@ const ChatInterface = ({ assignment }) => {
     
     // Add user message to chat
     const userMessage = input.trim();
-    const updatedMessages = [...messages, { sender: 'user', text: userMessage }];
+    const userMessageObj = { 
+      sender: 'user', 
+      text: userMessage, 
+      timestamp: new Date().toISOString() 
+    };
+    const updatedMessages = [...messages, userMessageObj];
     setMessages(updatedMessages);
     setInput('');
     setError(null);
@@ -75,10 +129,26 @@ const ChatInterface = ({ assignment }) => {
         await new Promise(resolve => setTimeout(resolve, 1000));
       }
       
-      setMessages(prevMessages => [
-        ...prevMessages, 
-        { sender: 'ai', text: aiResponse }
-      ]);
+      const aiMessageObj = { 
+        sender: 'ai', 
+        text: aiResponse, 
+        timestamp: new Date().toISOString() 
+      };
+      
+      const newMessages = [...updatedMessages, aiMessageObj];
+      setMessages(newMessages);
+      
+      // Save updated conversation
+      saveConversation({
+        id: conversationId,
+        assignmentId: assignment.id,
+        assignmentCode: assignment.code,
+        assignmentTitle: assignment.title,
+        studentName: studentName,
+        timestamp: new Date().toISOString(),
+        messages: newMessages
+      });
+      
     } catch (error) {
       console.error('Error getting AI response:', error);
       setError('Failed to get response from AI tutor. Please try again.');
@@ -92,10 +162,43 @@ const ChatInterface = ({ assignment }) => {
     setUseApi(!useApi);
   };
 
+  // Render student name form if name not yet submitted
+  if (!nameSubmitted) {
+    return (
+      <div className="chat-interface">
+        <div className="chat-header">
+          <h3>AI Tutor Chat</h3>
+        </div>
+        
+        <div className="chat-messages">
+          <div className="message ai-message">
+            <div className="message-bubble">
+              Welcome! Please enter your name to begin this assignment.
+            </div>
+          </div>
+        </div>
+        
+        <form className="chat-input" onSubmit={handleNameSubmit}>
+          <input
+            type="text"
+            value={studentName}
+            onChange={(e) => setStudentName(e.target.value)}
+            placeholder="Enter your name"
+            required
+          />
+          <button type="submit" disabled={!studentName.trim()}>
+            Start
+          </button>
+        </form>
+      </div>
+    );
+  }
+
   return (
     <div className="chat-interface">
       <div className="chat-header">
         <h3>AI Tutor Chat</h3>
+        <div className="student-info">Student: {studentName}</div>
         <div className="api-toggle">
           <label>
             <input 

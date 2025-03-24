@@ -30,6 +30,12 @@ const Teacher = () => {
           >
             My Assignments
           </button>
+          <button 
+            className={`tab-button ${activeTab === 'conversations' ? 'active' : ''}`}
+            onClick={() => setActiveTab('conversations')}
+          >
+            Student Conversations
+          </button>
         </div>
         
         <TeacherDashboard activeTab={activeTab} />
