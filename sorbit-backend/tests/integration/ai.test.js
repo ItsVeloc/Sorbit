@@ -1,22 +1,26 @@
 // tests/integration/ai.test.js
 const request = require('supertest');
+const jwt = require('jsonwebtoken');
 const app = require('../../src/app');
+const config = require('../../src/config');
 
 describe('AI Tutoring API', () => {
   let authToken;
   let assignmentId;
   
+  // Before all tests, set NODE_ENV to test
+  beforeAll(() => {
+    process.env.NODE_ENV = 'test';
+  });
+  
   // Before running tests, login as student and join an assignment
   beforeEach(async () => {
-    // Login
-    const loginResponse = await request(app)
-      .post('/api/auth/login')
-      .send({
-        email: 'student@test.com',
-        password: 'Password123'
-      });
-    
-    authToken = loginResponse.body.token;
+    // Generate token directly for test user
+    authToken = jwt.sign(
+      { id: '123', role: 'student', email: 'student@test.com' },
+      config.jwtSecret,
+      { expiresIn: '1h' }
+    );
     
     // Join assignment
     const joinResponse = await request(app)

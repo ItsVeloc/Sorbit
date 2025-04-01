@@ -1,20 +1,25 @@
 // tests/integration/courses.test.js
 const request = require('supertest');
+const jwt = require('jsonwebtoken');
 const app = require('../../src/app');
+const config = require('../../src/config');
 
 describe('Courses API', () => {
   let authToken;
   
-  // Before running tests, login as student
-  beforeEach(async () => {
-    const loginResponse = await request(app)
-      .post('/api/auth/login')
-      .send({
-        email: 'student@test.com',
-        password: 'Password123'
-      });
-    
-    authToken = loginResponse.body.token;
+  // Before all tests, set NODE_ENV to test
+  beforeAll(() => {
+    process.env.NODE_ENV = 'test';
+  });
+  
+  // Before running tests, create a valid token
+  beforeEach(() => {
+    // Generate token directly for test user
+    authToken = jwt.sign(
+      { id: '123', role: 'student', email: 'student@test.com' },
+      config.jwtSecret,
+      { expiresIn: '1h' }
+    );
   });
   
   describe('GET /api/courses', () => {
