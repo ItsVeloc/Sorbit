@@ -1,0 +1,40 @@
+version: '3.8'
+
+services:
+  # MongoDB service
+  mongodb:
+    image: mongo:6
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      - MONGO_INITDB_DATABASE=sorbit
+
+  # MongoDB admin interface (optional)
+  mongo-express:
+    image: mongo-express
+    ports:
+      - "8081:8081"
+    environment:
+      - ME_CONFIG_MONGODB_SERVER=mongodb
+    depends_on:
+      - mongodb
+
+  # Main application (uncomment when ready to containerize the app)
+  # api:
+  #   build: .
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - mongodb
+  #   environment:
+  #     - MONGODB_URI=mongodb://mongodb:27017/sorbit
+  #     - PORT=3000
+  #     - NODE_ENV=development
+  #   volumes:
+  #     - ./:/app
+  #     - /app/node_modules
+
+volumes:
+  mongodb_data:
