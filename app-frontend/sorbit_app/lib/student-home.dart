@@ -27,7 +27,9 @@ class HomePage extends StatelessWidget {
         title: Text(title, style: TextStyle(fontWeight: FontWeight.bold)),
         subtitle: Text(subtitle),
         trailing: Icon(Icons.arrow_forward_ios),
-        onTap: () {},
+        onTap: () {
+
+        },
       ),
     );
   }

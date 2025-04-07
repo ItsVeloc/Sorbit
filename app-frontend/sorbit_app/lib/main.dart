@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'student-home.dart';
 import 'student-assignments.dart';
 import 'student-calendar.dart';
+import 'chatpage.dart';
 
 void main() {
   runApp(const MyApp());
@@ -53,7 +54,7 @@ class _WrapperPageState extends State<WrapperPage> {
         actions: [
           IconButton(
             icon: Icon(Icons.account_circle),
-            onPressed: () {},
+            onPressed: () {Navigator.push(context, MaterialPageRoute(builder: (context) => ChatPage() ));},
           ),
         ],
       ),
