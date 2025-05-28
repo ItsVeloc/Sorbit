@@ -172,8 +172,8 @@ class HomePage extends StatelessWidget {
                     color: Colors.grey.shade300,
                     borderRadius: BorderRadius.circular(16),
                   ),
-                  child: const Center(
-                    child: Icon(Icons.class_outlined, color: Colors.grey, size: 40),
+                  child:  Center(
+                    child: Image.network('https://cdn.discordapp.com/attachments/870625854504464437/1377301684006555738/image_2025-03-21_150047843.png?ex=683877a6&is=68372626&hm=e1f72800dbfe112692ad602f3e95e70b7b13aac235c41932712abe7c9eb816d1&'),
                   ),
                 ),
               ),
